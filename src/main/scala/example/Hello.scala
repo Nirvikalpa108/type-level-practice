@@ -27,20 +27,49 @@ object Hello {
   // and replace the result with whatever is given in the second argument"
   // Using *> then becomes a useful shortcut when dealing with delayed computation through Monix task, IO, or the like.
   // There’s also a symmetric operation, <*
+  // remember that *> is exactly the same as productR and <* productL
   // https://blog.softwaremill.com/9-tips-about-using-cats-in-scala-you-might-want-to-know-e1bafd365f88
   def *>[A, B](as: Option[A], bs: Option[B]): Option[B] = ???
 
-  // TODO h/w
+  // TODO h/w done
   // product of these 2 effects and give me the left one
   def productL[A, B](as: Option[A], bs: Option[B]): Option[A] = map2(as, bs)((a,_) => a)
-  def *>[A, B](as: Option[A], bs: Option[B]): Option[A] = ??? // I can't remember what this method was for!
+  def <*[A, B](as: Option[A], bs: Option[B]): Option[A] = ??? // same as productL
 
+  // TODO h/w done - implement map3
   // we can have any number of mapN
-  def map2[A, B, C](as: List[A], bs: List[B])(f: (A, B) => C): List[C] = ???
-  def map3[A, B, C, D](as: Option[A], bs: Option[B], cs: Option[C])(f: (A, B, C) => D): Option[D] = ???
-  // TODO h/w - implement map3 and map4 with map2
+  //def map2[A, B, C](as: Option[A], bs: Option[B])(f: (A, B) => C): Option[C]
+  def map3[A, B, C, D](as: Option[A], bs: Option[B], cs: Option[C])(f: (A, B, C) => D): Option[D] = {
+    val abs = map2(as, bs){ (a, b) =>
+      (a,b)
+    }
+    map2(abs, cs) { case ((a,b), c) =>
+      f(a, b, c)
+    }
+  }
+
+  // TODO h/w done - implement map4 with map2.
+  // TODO h/w - In a new file, without looking, implement map, map2 and map3 & map4 using map2
   // then explain why you can do mapN with map2
-  def map4[A, B, C, D](as: Option[A], bs: Option[B], cs: Option[C])(f: (A, B, C) => D): Option[D] = ???
+  def map4[A, B, C, D, E](as: Option[A], bs: Option[B], cs: Option[C], ds: Option[D])(f: (A, B, C, D) => E): Option[E] = {
+    val abs = map2(as, bs) { (a, b) =>
+      (a, b)
+    }
+    val abcs = map2(abs, cs) { case ( (a, b), c) =>
+      (a, b, c)
+    }
+    map2(abcs, ds) { case ((a, b, c), d) =>
+      f(a, b, c, d)
+    }
+  }
+  
+  //https://stackoverflow.com/questions/44239403/map3-in-scala-in-parallelism
+  def map3[A,B,C,D](as :Option[A], bs: Option[B], cs: Option[C])(f: (A,B,C) => D) :Option[D]  = {
+    def partialCurry(a: A, b: B)(c: C): D = f(a, b, c)
+    val pc2d: Option[C => D] = map2(as, bs)((a, b) => partialCurry(a, b))
+    def applyFunc(func: C => D, c: C): D = func(c)
+    map2(pc2d, cs)((c2d, c) => applyFunc(c2d, c))
+  }
 
   // applying a dependent function
   // perform an effectful computation that depends on first effect
@@ -58,5 +87,7 @@ object Hello {
   // traverse takes two higher kinded types instead of just one
   // about swapping effects
   def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = ???
+
+  def sequence[A](aos: List[Option[A]]): Option[List[A]] = ???
 
 }
