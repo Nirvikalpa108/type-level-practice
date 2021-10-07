@@ -1,8 +1,6 @@
 package example
 
 object Hello {
-  def main(args: Array[String]): Unit = ???
-
   // 3 levels of power: map, mapN, flatMap (and traverse - although can derive from others)
 
   // pure function with an effect
@@ -11,7 +9,7 @@ object Hello {
   // pure function of 2 arguments that depends on two effects
   // two independent effects - effect of A and effect of B
   // if they both happen successfully, we can run f
-  def map2[A, B, C](as: Option[A], bs: Option[B])(f: (A, B) => C): Option[C] = ???
+  //def map2[A, B, C](as: Option[A], bs: Option[B])(f: (A, B) => C): Option[C] = ???
 
   // implementing with flatMap
   def map2[A, B, C](as: Option[A], bs: Option[B])(f: (A, B) => C): Option[C] = {
@@ -39,14 +37,14 @@ object Hello {
   // TODO h/w done - implement map3
   // we can have any number of mapN
   //def map2[A, B, C](as: Option[A], bs: Option[B])(f: (A, B) => C): Option[C]
-  def map3[A, B, C, D](as: Option[A], bs: Option[B], cs: Option[C])(f: (A, B, C) => D): Option[D] = {
-    val abs = map2(as, bs){ (a, b) =>
-      (a,b)
-    }
-    map2(abs, cs) { case ((a,b), c) =>
-      f(a, b, c)
-    }
-  }
+//  def map3[A, B, C, D](as: Option[A], bs: Option[B], cs: Option[C])(f: (A, B, C) => D): Option[D] = {
+//    val abs = map2(as, bs){ (a, b) =>
+//      (a,b)
+//    }
+//    map2(abs, cs) { case ((a,b), c) =>
+//      f(a, b, c)
+//    }
+//  }
 
   // TODO h/w done - implement map4 with map2.
   // TODO h/w - In a new file, without looking, implement map, map2 and map3 & map4 using map2
@@ -62,7 +60,8 @@ object Hello {
       f(a, b, c, d)
     }
   }
-  
+
+  // 15/9 - we can come back to this and write it simpler
   //https://stackoverflow.com/questions/44239403/map3-in-scala-in-parallelism
   def map3[A,B,C,D](as :Option[A], bs: Option[B], cs: Option[C])(f: (A,B,C) => D) :Option[D]  = {
     def partialCurry(a: A, b: B)(c: C): D = f(a, b, c)
