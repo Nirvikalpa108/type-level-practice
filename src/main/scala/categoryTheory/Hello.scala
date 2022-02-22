@@ -1,4 +1,4 @@
-package example
+package categoryTheory
 
 object Hello {
   // 3 levels of power: map, mapN, flatMap (and traverse - although can derive from others)

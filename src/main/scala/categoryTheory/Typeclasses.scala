@@ -1,4 +1,4 @@
-package example
+package categoryTheory
 
 object Typeclasses {
   def main(args: Array[String]): Unit = {

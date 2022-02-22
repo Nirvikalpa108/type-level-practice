@@ -1,4 +1,4 @@
-package example
+package categoryTheory
 
 object TryByMyself {
   def map[A, B](as: Option[A])(f: A => B): Option[B] = as match {
